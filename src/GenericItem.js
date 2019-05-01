@@ -15,7 +15,7 @@ class GenericItem {
         this.geometry = new THREE.BoxGeometry(c.w, c.h, c.d);
 
         this.material = new THREE.MeshLambertMaterial( { color: 0xe0e0e0, wireframe: false,
-            transparent: true, opacity: 0.5
+            transparent: true, opacity: 0.85
         } );
 
         this.cube = new THREE.Mesh( this.geometry, this.material );
