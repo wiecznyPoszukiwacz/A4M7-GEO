@@ -11,6 +11,7 @@ class Site{
         this.scene.background = new THREE.Color( 0xf0f0f0 );
 
         this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        //this.camera = new THREE.OrthographicCamera(window.innerWidth / - 16, window.innerWidth / 16,window.innerHeight / 16, window.innerHeight / - 16, -200, 500);
         this.renderer = new THREE.WebGLRenderer({antialias: true});
 
         this.renderer.shadowMapEnabled = true;
@@ -52,15 +53,6 @@ class Site{
 
         this.scene.add(plane);
 
-        // plane
-        /*
-        var planeGeometry = new THREE.PlaneBufferGeometry( 20, 20, 32, 32 );
-        var planeMaterial = new THREE.MeshStandardMaterial( { color: 0x00ff00 } )
-        var plane = new THREE.Mesh( planeGeometry, planeMaterial );
-        plane.receiveShadow = true;
-        this.scene.add( plane );
-        */
-
         const ambient = new THREE.AmbientLight(0xaaaaaa)
 
         this.scene.add(ambient)
@@ -81,37 +73,21 @@ class Site{
 
         //let controls = new Trackball(this.camera)
 
-        let controls = new THREE.MapControls(this.camera, this.render.domElement, {
-            target: new THREE.Plane(new THREE.Vector3(0, 0, 1), 0),
+        this.controls = new THREE.MapControls(this.camera, this.render.domElement, {
+            target: new THREE.Plane(new THREE.Vector3(0, 0, 1.8), 0),
             minDistance: 2.0,
             maxDistance: 20
         })
-        controls.addEventListener('change', render)
 
-        function animate() {
-            requestAnimationFrame( animate );
-            controls.update()
-            //renderer.render(this.scene, this.camera);
-        }
 
-        let camera = this.camera
-        let renderer = this.renderer
-        let scene = this.scene
-        function render(){
-
-            renderer.render(scene, camera );
-        }
-
-        render()
-        animate()
     }
 
     add(item){
         this.scene.add(item)
-        this.renderer.render(this.scene, this.camera);
     }
 
     render(){
+        this.controls.update()
         this.renderer.render(this.scene, this.camera);
     }
 

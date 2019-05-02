@@ -6,6 +6,7 @@ const materialGlass = require('./../../materials/glass')
 const waterMaterial = require('./../../materials/liquids/water')
 const genericMaterial = require('./../../materials/generics')
 
+const CylinderTank = require('./../components/CylinderTank')
 const factory3d = require('./../../../helpers/3d/factory')
 
 /*
@@ -15,6 +16,8 @@ const factory3d = require('./../../../helpers/3d/factory')
 class TNKU10{
 
 	constructor(site, options = {}){
+
+		this.liquidLevel = 1/2.9
 
 		if(options.liquidMaterial === undefined){
 			options.liquidMaterial = waterMaterial.clean
@@ -26,28 +29,16 @@ class TNKU10{
 
 		let group = new Group()
 
-		group.castShadow = true
-
-		// zbiornik
-		let mainCylinder = factory3d.createCylinder({
+		this.tank = new CylinderTank(group, {
 			r: 0.9, h: 2.9,
-			y: 1 + (2.9 / 2),
-			material: materialGlass.plain,
-			group
-		})
-
-		mainCylinder.castShadow = true
-
-		// zawartość
-		let liquidMesh = factory3d.createCylinder({
-			r: 0.85, h: 2,
-			y: 1 + (2 / 2),
-			material: options.liquidMaterial,
-			group
+			y: 1,
+			tankMaterial: materialGlass.plain,
+			liquidMaterial: options.liquidMaterial,
+			fill: 0.5
 		})
 
 		// podstawa
-		let base = factory3d.createBox({
+		factory3d.createBox({
 			w: 2, h: 1, d: 2,
 			y: 0.50,
 			material: genericMaterial.chasis,
@@ -55,41 +46,38 @@ class TNKU10{
 		})
 
 		// daszek
-		let top = factory3d.createBox({
+		factory3d.createBox({
 			w: 2, h: 0.1, d: 2,
 			y: 3.95,
 			material: genericMaterial.chasis,
 			group
 		})
 
-		top.castShadow = true
-
 		// mocowanie
-		let mnt1 = factory3d.createCylinder({
+		factory3d.createCylinder({
 			r: 0.1, h: 2.9,
 			y: 1 + (2.9 / 2), z: 0.8, x: 0.8,
 			material: genericMaterial.chasis,
 			group
 		})
-		let mnt2 = factory3d.createCylinder({
+		factory3d.createCylinder({
 			r: 0.1, h: 2.9,
 			y: 1 + (2.9 / 2), z: -0.8, x: 0.8,
 			material: genericMaterial.chasis,
 			group
 		})
-		let mnt3 = factory3d.createCylinder({
+		factory3d.createCylinder({
 			r: 0.1, h: 2.9,
 			y: 1 + (2.9 / 2), z: 0.8, x: -0.8,
 			material: genericMaterial.chasis,
 			group
 		})
-		let mnt4 = factory3d.createCylinder({
+		factory3d.createCylinder({
 			r: 0.1, h: 2.9,
 			y: 1 + (2.9 / 2), z: -0.8, x: -0.8,
 			material: genericMaterial.chasis,
 			group
 		})
-
 
 		group.position.z = options.z + 1
 		group.position.y = options.y
@@ -97,6 +85,15 @@ class TNKU10{
 
 		site.add(group)
 
+	}
+
+	set level(l){
+		this.liquidLevel = l
+		this.tank.setFill(l)
+	}
+
+	get level(){
+		return this.liquidLevel
 	}
 
 }
